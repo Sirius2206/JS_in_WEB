@@ -2,16 +2,19 @@ const sideWidget = document.querySelector('.chat-widget__side');
 const chatWindow = document.querySelector('.chat-widget');
 const chatInput = document.getElementById('chat-widget__input');
 const chatMsg = document.getElementById('chat-widget__messages');
+const container = document.querySelector('.chat-widget__messages-container');
 const robotResponse = ['Добрый день!', 'Сейчас что-нибудь придумаем',
                         'Собака с милицией обещали прийти', 'До свидания!',
-                        'Ваш запрос выполняется']
+                        'Ваш запрос выполняется'];
+
 const robotQuestions = ['Чем мы можем Вам помочь?', 'Как мы можем к Вам обращаться?', 'Опишите проблему и мы постараемся помочь.'];
 
 let isActive = false;
+let onCooldown = false;
 
 sideWidget.onclick = () => {
     chatWindow.classList.add('chat-widget_active');
-    setTimeout(postRobotQuestion, 3000);
+    setTimeout(postRobotQuestion, 30000);
 }
 
 chatInput.onkeydown = e => {
@@ -22,7 +25,10 @@ chatInput.onkeydown = e => {
         }
         isActive = true;
         postClientMessage();
-        setTimeout(() => postRobotMessage(robotResponse), 10000)
+        if (!onCooldown){
+            setTimeout(() => postRobotMessage(robotResponse), 10000);
+        }
+        onCooldown = true;
     }
 }
 
@@ -44,6 +50,7 @@ function postClientMessage() {
     resultMsg.appendChild(msgText);
     chatMsg.appendChild(resultMsg);
     chatInput.value = '';
+    container.scrollTo(0, container.scrollHeight);
 }
 
 function postRobotQuestion() {
@@ -68,6 +75,9 @@ function postRobotMessage(messages) {
     resultMsg.appendChild(msgTime);
     resultMsg.appendChild(msgText);
     chatMsg.appendChild(resultMsg);
+    container.scrollTo(0, container.scrollHeight);
+
+    onCooldown = false;
 }
 
 function getCurrentDate() {
