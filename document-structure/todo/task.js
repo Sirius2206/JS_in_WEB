@@ -9,32 +9,6 @@ const addButton = document.getElementById('tasks__add');
 const input = document.getElementById('task__input');
 initializeAddBtns();
 
-function restoreSavedData() {
-    if (savedData) {
-        tasksList.innerHTML = savedData.getItem('tasks');
-    }
-}
-
-function initializeCloseBtns() {
-    for (let btn of closeBtns) {
-        btn.addEventListener('click', removeTask);
-    }
-}
-
-function initializeAddBtns() {
-    addButton.addEventListener('click', e => {
-        addTask();
-        e.preventDefault();
-    });
-
-    input.addEventListener('keydown', e => {
-        if (e.code === 'Enter') {
-            addTask();
-            e.preventDefault();
-        }
-    })
-}
-
 function addTask() {
     if (input.value.trim() == '') {
         input.value = '';
@@ -62,14 +36,40 @@ function addTask() {
     saveData();
 }
 
-function saveData() {
+function initializeAddBtns() {
+    addButton.addEventListener('click', e => {
+        addTask();
+        e.preventDefault();
+    });
+
+    input.addEventListener('keydown', e => {
+        if (e.code === 'Enter') {
+            addTask();
+            e.preventDefault();
+        }
+    })
+}
+
+function initializeCloseBtns() {
+    for (let btn of closeBtns) {
+        btn.addEventListener('click', removeTask);
+    }
+}
+
+function removeTask() {
+    this.closest('div.task').remove();
     savedData.clear();
     let toSave = tasksList.innerHTML;
     savedData.setItem('tasks', toSave);
 }
 
-function removeTask() {
-    this.closest('div.task').remove();
+function restoreSavedData() {
+    if (savedData.getItem('tasks')) {
+        tasksList.innerHTML = savedData.getItem('tasks');
+    }
+}
+
+function saveData() {
     savedData.clear();
     let toSave = tasksList.innerHTML;
     savedData.setItem('tasks', toSave);

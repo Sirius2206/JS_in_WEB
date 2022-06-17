@@ -1,6 +1,9 @@
 body {
   font-family: Arial;
 }
+.cart {
+  display: none;
+}
 .cart__products {
   display: flex;
   justify-content: center;
@@ -74,12 +77,36 @@ body {
   padding: 0 10px;
 }
 
+.cart_add-del {
+  display: flex;
+}
 .product__add {
   background: green;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   color: #fff;
   border-radius: 5px;
   cursor: pointer;
+
+  font-size: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+.product__delete {
+  display: none;
+  background: red;
+  /* padding: 10px 20px; */
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 30px;
+
+  width: 30%;
+  text-align: center;
+}
+
+.product__delete_active {
+  display: block;
 }
 
 .product__add:hover {
