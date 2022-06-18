@@ -1,14 +1,21 @@
 const revealElem = Array.from(document.querySelectorAll('.reveal'));
 
-setInterval(() => {
+function isVisible(elem) {
+    const coords = elem.getBoundingClientRect();
+    const windowHeight = document.documentElement.clientHeight;
+    if (coords.top + coords.height > 0 && coords.top < windowHeight) {
+        return true;
+    }
+}
+
+function revealItem() {
     revealElem.forEach(elem => {
-        if (elem.getBoundingClientRect().top < window.innerHeight) {
+        if (isVisible(elem)) {
             elem.classList.add('reveal_active');
-        }
-        if (elem.getBoundingClientRect().bottom < 0) {
+        } else {
             elem.classList.remove('reveal_active');
         }
     })
-}, 1000)
+}
 
-
+window.onscroll = revealItem;
