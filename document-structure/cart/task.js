@@ -51,8 +51,8 @@ function animate(product, cartProduct) {
     let deltaX = cartX - prodX;
     let deltaY = cartY - prodY;
 
-    let modX = deltaX / 100;
-    let modY = deltaY / 100;
+    let modX = deltaX / (1000/60);
+    let modY = deltaY / (1000/60);
 
     let posX = prodX;
     let posY = prodY;
@@ -65,7 +65,7 @@ function animate(product, cartProduct) {
             clearInterval(timer);
             image.remove();
         }
-    }, 2)
+    }, 1000/60)
 }
 
 function cartHasProduct(product) {
