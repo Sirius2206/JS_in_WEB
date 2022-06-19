@@ -1,34 +1,30 @@
 const pollDiv = document.querySelector('.poll');
 
-let request = new XMLHttpRequest();
-request.open("GET", 'https://netology-slow-rest.herokuapp.com/poll.php', true);
-request.onload = function () {
-  const answer = JSON.parse(request.responseText);
-  printPoll(answer);
+function start() {
+  let request = new XMLHttpRequest();
+  request.open("GET", 'https://netology-slow-rest.herokuapp.com/poll.php', true);
+  request.onload = function () {
+    const answer = JSON.parse(request.responseText);
+    printPoll(answer);
+  }
+  request.send(null);
 }
-request.send(null);
 
 function printPoll(poll) {
-
-  createPoll(poll)
-}
-
-
-function createPoll(poll) {
   const pollQuestion = poll.data.title;
   const pollAnswers = poll.data.answers;
   const titleDiv = document.getElementById('poll__title');
+  const answersDiv = document.getElementById('poll__answers');
   titleDiv.innerText = pollQuestion;
-
-  const answersDiv = document.getElementById('poll__answers')
 
   for (let answer in pollAnswers) {
     const button = document.createElement('button');
     button.classList.add('poll__answer');
     button.innerText = pollAnswers[answer];
     answersDiv.appendChild(button);
+
     button.addEventListener('click', () => {
-      alert('Спасибо, ваш голос засчитан!')
+      alert('Спасибо, ваш голос засчитан!');
       sendAnswer(poll, answer);
     })
   }
@@ -38,10 +34,12 @@ function createPoll(poll) {
 
 function sendAnswer(poll, answer) {
   const postString = `vote=${poll.id}&answer=${answer}`;
+
   const postRequest = new XMLHttpRequest();
   postRequest.open('POST', 'https://netology-slow-rest.herokuapp.com/poll.php');
   postRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   postRequest.send(postString);
+
   postRequest.onload = () => printStatistics(JSON.parse(postRequest.response));
 
 }
@@ -58,8 +56,8 @@ function printStatistics(response) {
     statDiv.innerText = element.answer + ': ' + ((element.votes / sum) * 100).toFixed(2) + '%';
     resultDiv.appendChild(statDiv);
   }
-
   let pollTitle = document.getElementById('poll__title');
-
   pollDiv.replaceChildren(pollTitle, resultDiv);
 }
+
+start();
