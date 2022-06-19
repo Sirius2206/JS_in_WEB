@@ -1,60 +1,65 @@
-
+const pollDiv = document.querySelector('.poll');
 
 let request = new XMLHttpRequest();
 request.open("GET", 'https://netology-slow-rest.herokuapp.com/poll.php', true);
-request.onload = function (){
-    const answer = JSON.parse(request.responseText);
-    printPoll(answer);
+request.onload = function () {
+  const answer = JSON.parse(request.responseText);
+  printPoll(answer);
 }
 request.send(null);
 
 function printPoll(poll) {
-    const pollDiv  = document.querySelector('.poll');
-    const pollQuestion = poll.data.title;
-    const pollAnswers = poll.data.answers;
-    createPoll(pollQuestion, pollAnswers, pollDiv)
+
+  createPoll(poll)
 }
 
 
-function createPoll (question, answers, div) {
-    const questionDiv = document.createElement('div');
-    questionDiv.classList.add('poll__title');
-    questionDiv.id = 'poll__title';
-    questionDiv.innerText = question;
-    div.appendChild(questionDiv);
+function createPoll(poll) {
+  const pollQuestion = poll.data.title;
+  const pollAnswers = poll.data.answers;
+  const titleDiv = document.getElementById('poll__title');
+  titleDiv.innerText = pollQuestion;
 
-    const answersDiv = document.createElement('div');
-    answersDiv.className = "poll__answers poll__answers_active";
-    answersDiv.id = 'poll__answers';
+  const answersDiv = document.getElementById('poll__answers')
 
-    for (let answer of answers) {
-        const button = document.createElement('button');
-        button.classList.add('poll__answer');
-        button.innerText = answer;
-        answersDiv.appendChild(button);
-        button.addEventListener('click', () => {
-            alert('Спасибо, ваш голос засчитан!')
-        })
-    }
+  for (let answer in pollAnswers) {
+    const button = document.createElement('button');
+    button.classList.add('poll__answer');
+    button.innerText = pollAnswers[answer];
+    answersDiv.appendChild(button);
+    button.addEventListener('click', () => {
+      alert('Спасибо, ваш голос засчитан!')
+      sendAnswer(poll, answer);
+    })
+  }
 
-    div.appendChild(answersDiv);
+  pollDiv.appendChild(answersDiv);
 }
 
+function sendAnswer(poll, answer) {
+  const postString = `vote=${poll.id}&answer=${answer}`;
+  const postRequest = new XMLHttpRequest();
+  postRequest.open('POST', 'https://netology-slow-rest.herokuapp.com/poll.php');
+  postRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  postRequest.send(postString);
+  postRequest.onload = () => printStatistics(JSON.parse(postRequest.response));
 
-{/* <div class="poll__title" id="poll__title">
-            <!--   Как вы относитесь к собакам? -->
-          </div>
-          <div class="poll__answers poll__answers_active" id="poll__answers">
-            <!-- <button class="poll__answer">
-              Хорошо
-            </button>
-            <button class="poll__answer">
-              Отлично
-            </button>
-            <button class="poll__answer">
-              Я люблю собак
-            </button>
-            <button class="poll__answer">
-              Кто тут?
-            </button> -->
-          </div> */}
+}
+
+function printStatistics(response) {
+  let resultDiv = document.createElement('div')
+  let sum = 0;
+  for (element of response.stat) {
+    sum += element.votes;
+  }
+
+  for (element of response.stat) {
+    let statDiv = document.createElement('div');
+    statDiv.innerText = element.answer + ': ' + ((element.votes / sum) * 100).toFixed(2) + '%';
+    resultDiv.appendChild(statDiv);
+  }
+
+  let pollTitle = document.getElementById('poll__title');
+
+  pollDiv.replaceChildren(pollTitle, resultDiv);
+}
