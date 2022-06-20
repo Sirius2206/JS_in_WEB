@@ -15,6 +15,10 @@ let xhr = new XMLHttpRequest();
 xhr.upload.onprogress = function(event) {
     progress.setAttribute('value', (event.loaded / event.total).toFixed(3))
   }
+
+  xhr.upload.onload = function() {
+    alert('Закачка завершена');
+  }
 xhr.open('POST', 'https://netology-slow-rest.herokuapp.com/upload.php', true);
 xhr.send(formData); 
 }

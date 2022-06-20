@@ -1,21 +1,30 @@
-  var request = new XMLHttpRequest();
-  request.open("GET", 'https://netology-slow-rest.herokuapp.com', true);
-  request.onload = function (){
-    const valutes = JSON.parse(request.responseText).response.Valute;
-    print(valutes);
-    document.getElementById('loader').classList.remove('loader_active')
+let localStorage = window.localStorage;
+const items = document.getElementById('items');
+if(localStorage.getItem('valutesPrev')) {
+  items.innerHTML = localStorage.getItem('valutesPrev');
+}
+
+  function start() {
+    var request = new XMLHttpRequest();
+    request.open("GET", 'https://netology-slow-rest.herokuapp.com', true);
+    request.onload = function () {
+      items.innerHTML = '';
+      const valutes = JSON.parse(request.responseText).response.Valute;
+      print(valutes);
+      document.getElementById('loader').classList.remove('loader_active')
+    }
+    request.send(null);
   }
-  request.send(null);
 
   function print(valutes) {
     for (const valute in valutes) {
-        const items = document.getElementById('items');
-        items.appendChild(createItem(valutes[valute]));
+      items.appendChild(createItem(valutes[valute]));
     }
+    localStorage.setItem('valutesPrev', items.innerHTML);
   }
 
   function createItem(item) {
-    const resultDiv  = document.createElement('div');
+    const resultDiv = document.createElement('div');
     resultDiv.classList.add('item');
 
     const itemCode = document.createElement('div');
@@ -34,3 +43,5 @@
     resultDiv.appendChild(itemCurrency)
     return resultDiv;
   }
+
+  start();
