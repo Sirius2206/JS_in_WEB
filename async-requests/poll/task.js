@@ -28,7 +28,6 @@ function printPoll(poll) {
       sendAnswer(poll, answer);
     })
   }
-
   pollDiv.appendChild(answersDiv);
 }
 
