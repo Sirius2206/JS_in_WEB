@@ -37,6 +37,15 @@
   box-shadow: none;
 }
 
+.auth__failed {
+  display: none;
+  color: red;
+}
+
+.auth__failed_active {
+  display: block;
+}
+
 .welcome {
   display: none;
 }
